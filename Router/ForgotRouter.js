@@ -1,0 +1,10 @@
+import { ForgotPasswordOtpSend,ForgotPasswordOtpVerify } from "../controller/Auth_Controller/Forgotpassword.js";
+import express from "express";
+
+
+import { verifyApi } from "../middlewares/authApi.js";
+const router = express.Router();
+router.post('/forgot-password',ForgotPasswordOtpSend);
+router.post('/otp-verify',ForgotPasswordOtpVerify);
+
+export default router;
