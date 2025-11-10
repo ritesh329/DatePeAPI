@@ -1,32 +1,28 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 
-let dbcon=false;
-const db=async ()=>{
-   
+dotenv.config(); 
 
+let isConnected = false;
 
-    try{
+const db = async () => {
+  try {
+    if (isConnected) {
+      console.log("Database already connected");
+      return;
+    }
 
-
-    if(dbcon)
-    {
     
-       console.log("db is already connected");
-       return ;
-    }
-    else{
-         
-         await mongoose.connect('mongodb://127.0.0.1:27017/DatePe');
-         console.log("db is connected succesfully");
-         dbcon=true;
-    }
+    const MONGO_URI = process.env.MONGO_URI || "mongodb://127.0.0.1:27017/DatePe";
 
-    } catch(err)
-    {
-          console.log("DB connection error",err);
-    }
+    await mongoose.connect(MONGO_URI);
 
-
-}
+    console.log(` Database connected successfully`);
+    isConnected = true;
+  } catch (err) {
+    console.error(" Database connection error:", err.message);
+    process.exit(1); 
+  }
+};
 
 export default db;
