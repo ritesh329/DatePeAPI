@@ -51,10 +51,10 @@ const ForgotPasswordOtpSend = async (req, res) => {
 
  const ForgotPasswordOtpVerify = async (req, res) => {
   try {
-    const { email, otp, newPassword } = req.body;
+    const { email, otp } = req.body;
 
     // 1️⃣ Validate input
-    if (!email || !otp || !newPassword) {
+    if (!email || !otp ) {
       return res.status(400).json({ message: "Email, OTP and new password are required" });
     }
 
@@ -76,11 +76,11 @@ const ForgotPasswordOtpSend = async (req, res) => {
     }
 
     // 5️⃣ Hash new password
-    const hashedPass = await bcrypt.hash(newPassword, 10);
+    // const hashedPass = await bcrypt.hash(newPassword, 10);
 
-    // 6️⃣ Update user password
-    isUser.password = hashedPass;
-    await isUser.save();
+    // // 6️⃣ Update user password
+    // isUser.password = hashedPass;
+    // await isUser.save();
 
     // 7️⃣ Delete OTP record after success
     await OTP.deleteOne({ phone: isUser.MobNo });
@@ -99,4 +99,38 @@ const ForgotPasswordOtpSend = async (req, res) => {
   }
 };
 
-export {ForgotPasswordOtpSend,ForgotPasswordOtpVerify}
+
+const ForgetEnterNewPass = async (req, res) => {
+  try {
+    const { email, newPass } = req.body;
+
+    // ✅ Validation
+    if (!email || !newPass) {
+      return res.status(400).json({ message: "Email and new password are required" });
+    }
+
+    // ✅ Find User
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // ✅ Encrypt New Password
+    const hashedPass = await bcrypt.hash(newPass, 10);
+
+    // ✅ Update Password
+    user.password = hashedPass;
+    await user.save();
+
+    return res.status(200).json({ message: "Password updated successfully" });
+
+  } catch (err) {
+    console.error("ForgetEnterNewPass Error:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+
+
+
+
+export {ForgotPasswordOtpSend,ForgotPasswordOtpVerify, ForgetEnterNewPass }
