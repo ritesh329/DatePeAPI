@@ -100,35 +100,32 @@ const ForgotPasswordOtpSend = async (req, res) => {
 };
 
 
-const ForgetEnterNewPass = async (req, res) => {
+ const ForgetEnterNewPass = async (req, res) => {
   try {
     const { email, newPass } = req.body;
 
-    // ✅ Validation
     if (!email || !newPass) {
       return res.status(400).json({ message: "Email and new password are required" });
     }
 
-    // ✅ Find User
     const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // ✅ Encrypt New Password
+    // ✅ Hash the new password
     const hashedPass = await bcrypt.hash(newPass, 10);
 
-    // ✅ Update Password
-    user.password = hashedPass;
-    await user.save();
+    // ✅ Update directly (bypass schema validation)
+    await User.updateOne({ email }, { $set: { password: hashedPass } });
 
     return res.status(200).json({ message: "Password updated successfully" });
-
   } catch (err) {
     console.error("ForgetEnterNewPass Error:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
+
 
 
 
