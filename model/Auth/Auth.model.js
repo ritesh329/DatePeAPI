@@ -69,7 +69,24 @@ const SignUpSchema = new mongoose.Schema({
   ],
 
  
-},{
+
+
+likes: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+  ],
+
+  // Users who liked me
+  likedBy: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+  ],
+
+  // Users I matched with
+  matches: [
+    { type: mongoose.Schema.Types.ObjectId, ref: "User" }
+  ]
+
+},
+{
 
    timestamps:true
 });

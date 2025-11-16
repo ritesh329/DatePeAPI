@@ -34,6 +34,13 @@ const Login=async (req,res)=>{
    
    if(!isMatchPassword) return res.status(401).json({ message: "Invalid credentials" });
        
+    req.user = {
+  id: CheckUserExist._id
+};
+
+ console.log(req.user.id);
+
+
 
   res.status(201).json({success: true, message: "Login Successfull",userData:CheckUserExist});
 
